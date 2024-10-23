@@ -1,0 +1,61 @@
+Microsoft Windows [Version 10.0.19045.3086]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\JPC>mysql -u root -p --local_infile
+Enter password: 3323125869
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 14
+Server version: 8.0.33 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| anasdb             |
+| c3                 |
+| case1              |
+| classicmodels      |
+| information_schema |
+| mysql              |
+| northwind          |
+| performance_schema |
+| projecthr          |
+| sql_iq             |
+| sql_joins          |
+| sqlintro           |
+| sys                |
+| triggers           |
++--------------------+
+14 rows in set (0.00 sec)
+
+mysql> use projecthr;
+Database changed
+mysql> show tables;
++---------------------+
+| Tables_in_projecthr |
++---------------------+
+| hr                  |
++---------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from hr;
+Empty set (0.00 sec)
+
+mysql> load data local infile 'C:/ProgramData/MySQL/MySQL Server 8.0/Data/projecthr/Human Resources.csv'
+    -> into table hr
+    -> fields terminated by ','
+    -> enclosed by '"'
+    -> lines terminated by '\n'
+    -> ignore 1 rows;
+Query OK, 22214 rows affected, 65535 warnings (1.49 sec)
+Records: 22214  Deleted: 0  Skipped: 0  Warnings: 92785
+
+mysql> select * from hr;
