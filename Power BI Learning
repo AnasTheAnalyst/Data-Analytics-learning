@@ -1,1 +1,103 @@
-Adding KPI TO Titles in Line or Bar Charts
+•	YOY GROWTH %:
+
+            Divide ((current year)- (previous year sales), (previous year sales), blank())
+
+•	MOM Sales Growth% = 
+VAR up_arrow = UNICHAR(129137)
+VAR down_arrow = UNICHAR(129139)
+VAR CurrentSales = [Sales]
+VAR PMSales = [PM Sales]
+VAR Growth = DIVIDE(CurrentSales - PMSales, PMSales)
+RETURN
+    IF(
+        Growth <0, ROUND(Growth*100,1)& "% "&down_arrow,
+        "+"&round(Growth*100,1)&"% "&up_arrow
+
+
+
+•	QoQ Sales Growth % = 
+VAR up_arrow = UNICHAR(129137)
+VAR down_arrow = UNICHAR(129139)
+VAR CurrentSales = [Sales]
+VAR PQSales = [PQ Sales]
+VAR Growth = DIVIDE(CurrentSales - PQSales, PQSales)
+RETURN
+    IF(
+        Growth <0, ROUND(Growth*100,1)& "% "&down_arrow,
+        "+"&round(Growth*100,1)&"% "&up_arrow
+    )
+
+•	Color PM Sales = 
+VAR mom_growth = DIVIDE( [Sales] - [PM Sales], [PM Sales])
+RETURN
+    IF( mom_growth < 0, "red","green")
+
+•	Color PQ Sales = 
+VAR qoq_growth = DIVIDE( [Sales] - [PQ Sales], [PQ Sales])
+RETURN
+    IF( qoq_growth < 0, "red","green")
+
+
+
+•	Correct Average: =
+             AVERAGEX (SUMMARIZE (
+             Sales,
+             Sales [Customer Key],
+             Sales [Yearly Income]
+              ),
+              Sales [Yearly Income]
+
+
+
+2. How to add Svg to power BI:
+
+First go to Svg viewer and copy code and add to new measure .Using chatgpt replace all code with the “ to ‘. Then at first line write this 
+Img = “data:image/svg+xml;utf8,
+Single comma Code ” 
+3. How to Adding KPI to Titles in Line or Bar Charts
+First we have to make two Measure, which we add in title and subtitle through text (Conditional formating)
+-	MainTitle Measure = [Total Sales]
+-	Subtitle Measure =   Format ([Total Sales], “#,##0,,.0 M ”
+We have to write another Change above subtitle measure to number format so we Change it and also add Difference
+-	Subtitle Measure =   Format ([Total Sales], “#,##0,,.0 M ”
+  &”   ”& Format ([Total Sales vs forecast Pct difference], “+0.0%; -0.0%” ) &  “△ FC”
+
+Now we add the above measure to Main title for showing different color and text size
+
+-	Main Title Measure = 
+[Total Sales]  & Rept (UNICHAR(10), 2 )  & Rept (“    ”,25 ) &
+&”   ”& Format ([Total Sales vs forecast Pct difference], “+0.0%; -0.0%” ) &  “  △ FC   ”
+IF ( [Total Sales vs forecast Pct difference] >=0 , “🟢”  , “🔴” )
+
+Now off the text Wrap and increase the Subtitle FontColor 
+
+-	
+4- How to add Page Navigation in a report
+
+Add 3 to 4 Bookmarks in a bookmark section according to the report, and also group them(Group1) and reorder them according to the report layout.
+-	Then Add a Bookmark Navigator, then in a Format Pane, In Bookmark drop menu, Select Group1.
+-	Then Resize and format it it and replace it with Previous Buttons, Then add the 4 Dropdownmenu means Add Page navigator and format it
+-	Then update the Bookmark in the bookmark Selection according to Selection. 
+-	One Problem, one Page Dropdowns is always open, So, we create a new bookmark(Close Dropdowns)  that can close the all Page Dropdowns
+-	Then update this new bookmark by selecting all and hiding all the dropdown and shape, only make the bookmark navigator open. 
+-	Then select the bookmark navigator in report, in a format section, in bookmark dropdown Select Group1 and in deselection select bookmark(Close Dropdowns)  
+-	Also Do same for background shape
+
+
+
+
+	Advanced Chart:
+
+•	Animated bar chart:
+                      To show the sales of category in different period
+•	Drill down column chart:
+                      to show the sales in a time period (year, month, quarter, day) of a category or subcategory etc
+•	Drill down donut chart:
+                      to show the sales in category, subcategory and product name in one chart
+•	Sankey Charts
+                 To show relationship between two columns, two category and subcategory
+•	Scroller:
+
+•	Sunburst:
+to show the sales in a time period (year, month, quarter, day). sales in category, subcategory and product name 
+•	Histogram
