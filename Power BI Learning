@@ -54,6 +54,8 @@ RETURN
 First go to Svg viewer and copy code and add to new measure .Using chatgpt replace all code with the “ to ‘. Then at first line write this 
 Img = “data:image/svg+xml;utf8,
 Single comma Code ” 
+
+
 3. How to Adding KPI to Titles in Line or Bar Charts
 First we have to make two Measure, which we add in title and subtitle through text (Conditional formating)
 -	MainTitle Measure = [Total Sales]
