@@ -57,10 +57,12 @@ Single comma Code ”
 
 
 3. How to Adding KPI to Titles in Line or Bar Charts
+
 First we have to make two Measure, which we add in title and subtitle through text (Conditional formating)
 -	MainTitle Measure = [Total Sales]
--	Subtitle Measure =   Format ([Total Sales], “#,##0,,.0 M ”
-We have to write another Change above subtitle measure to number format so we Change it and also add Difference
+-	Subtitle Measure =   Format ([Total Sales], “#,##0,,.0 M ”)
+We have to write another, Change above subtitle measure to number format so we Change it and also add Difference
+
 -	Subtitle Measure =   Format ([Total Sales], “#,##0,,.0 M ”
   &”   ”& Format ([Total Sales vs forecast Pct difference], “+0.0%; -0.0%” ) &  “△ FC”
 
@@ -72,6 +74,119 @@ Now we add the above measure to Main title for showing different color and text 
 IF ( [Total Sales vs forecast Pct difference] >=0 , “🟢”  , “🔴” )
 
 Now off the text Wrap and increase the Subtitle FontColor 
+
+
+
+4 How to Adding KPI to Titles in Line or Bar Charts in 5 Steps
+
+
+-	First Create YOY%
+YoY %  = 
+VAR _SELECTED_YEAR = SELECTEDVALUE(Budget_Sheet[Date].[Year])
+
+VAR _FIRST_DAY =
+    CALCULATE(
+        MIN(Budget_Sheet[Date]),
+        FILTER(
+            ALL(Budget_Sheet), -- Ignores all filters in the Budget_Sheet
+            YEAR(Budget_Sheet[Date]) = _SELECTED_YEAR - 1
+        )
+    )
+
+VAR _LAST_DAY =
+    CALCULATE(
+        MAX(Budget_Sheet[Date]),
+        FILTER(
+            ALL(Budget_Sheet),
+            YEAR(Budget_Sheet[Date]) = _SELECTED_YEAR - 1
+        )
+    )
+
+VAR _LAST_YEAR_SALES =
+    CALCULATE(
+        SUM(Budget_Sheet[Budgeted Amt]),
+        FILTER(
+            ALL(Budget_Sheet),
+            Budget_Sheet[Date] >= _FIRST_DAY &&
+            Budget_Sheet[Date] <= _LAST_DAY
+        )
+    )
+
+// VAR _FIRST_DAY_SHIFTED = DATE(YEAR(_FIRST_DAY) + 1, MONTH(_FIRST_DAY), DAY(_FIRST_DAY))
+// VAR _LAST_DAY_SHIFTED = DATE(YEAR(_LAST_DAY) + 1, MONTH(_LAST_DAY), DAY(_LAST_DAY))
+
+-- Selected Year's Sales (Based on Shifted Dates)
+
+// VAR _SELECTED_YEAR_SALES =
+//     CALCULATE(
+//         SUM(Budget_Sheet[Budgeted Amt]),
+//         FILTER(
+//             ALL(Budget_Sheet),
+//             Budget_Sheet[Date] >= _FIRST_DAY_SHIFTED &&
+//             Budget_Sheet[Date] <= _LAST_DAY_SHIFTED
+//         )
+//     )
+ VAR _SELECTED_YEAR_SALES =
+    CALCULATE(
+        SUM(Budget_Sheet[Budgeted Amt]),Budget_Sheet[Date].[Year]= _SELECTED_YEAR)
+
+RETURN
+
+    DIVIDE(
+        _SELECTED_YEAR_SALES - _LAST_YEAR_SALES,
+        _LAST_YEAR_SALES
+    )
+
+-	Second we create a arrow measure for upward and downward direction
+
+ARROW = 
+SWITCH(
+    TRUE(),
+    [YoY % 1] > 0, UNICHAR(11165),
+    [YoY % 1] < 0, UNICHAR(11167)
+)
+
+
+-	Third We create a Color Measure
+
+ Color =  SWITCH(
+    TRUE(),
+    [YoY % 1] > 0, “Green”
+    [YoY % 1] < 0, “Red”
+)
+
+- Fourth we create the Title and subtitle measure 
+   
+Title = 
+var NEGATIVE = "Budget" & " " & ([ARROW] & REPT(" ", 23)) & FORMAT(-([YoY % 1]), "0.00%")
+var POSITIVE = "Budget" & " " & ([ARROW] & REPT(" ", 23)) & FORMAT([YoY % 1], "0.00%")
+return
+
+SWITCH(
+  TRUE(),
+  [YoY % 1]<0, NEGATIVE,
+   [YoY % 1]>= 0, POSITIVE)
+
+Subtitle = FORMAT([Total bugeted], "#,###,,.00M")
+
+-	Fifth we add the Title into title of the Line chart and in font color  we add the Color measure.
+
+For further Advanced level Visualization we further add the last year sale to the Title of Line chart. 
+“  Title 1 = 
+var NEGATIVE = "Budget" & " " & ([ARROW] & REPT(" ", 23)) & FORMAT(-([YoY % 1]), "0.00%") & "| LY " & FORMAT([_last_year_sale], "$#,###,,.00M" )
+
+var POSITIVE = "Budget" & " " & ([ARROW] & REPT(" ", 23)) & FORMAT([YoY % 1], "0.00%") & "| LY " & FORMAT([_last_year_sale], "$#,###,,.00M" )
+
+return
+
+SWITCH(
+  TRUE(),
+  [YoY % 1]<0, NEGATIVE,
+   [YoY % 1]>= 0, POSITIVE)
+-	 ”
+
+
+
 
 -	
 4- How to add Page Navigation in a report
