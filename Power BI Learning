@@ -56,6 +56,14 @@ Img = “data:image/svg+xml;utf8,
 Single comma Code ” 
 
 
+3. How to Create Line Chart with Gradient Shadow in Power BI
+
+-	Go to Kerry Koloso website and select Deneb templates, Then select chart and copy the Code, Save it in you Pc in a new txt File, then replace it with the Json extension
+-	Open Power BI, Click New visualization and search “ Deneb Declarative visualization in power bi ”
+
+
+
+
 3. How to Adding KPI to Titles in Line or Bar Charts
 
 First we have to make two Measure, which we add in title and subtitle through text (Conditional formating)
